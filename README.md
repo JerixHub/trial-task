@@ -2,7 +2,7 @@
 
 A unified analytics dashboard for YouTube channels and web stores. Built for the Vibecoder trial task.
 
-**Live demo:** _will be filled in after Vercel deploy_
+**Live demo:** https://trial-task-six.vercel.app
 
 ## Screenshots
 
