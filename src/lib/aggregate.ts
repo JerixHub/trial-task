@@ -50,7 +50,7 @@ export function groupByDate<T extends { date: ISODate }>(
   }
   return [...map.entries()]
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, vals]) => ({ date, ...vals }));
+    .map(([date, vals]) => ({ date, ...vals })) as Array<{ date: ISODate } & Record<string, number>>;
 }
 
 export function deltaVsPrevious(current: number, previous: number): number | null {
