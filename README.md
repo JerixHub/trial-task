@@ -4,11 +4,6 @@ A unified analytics dashboard for YouTube channels and web stores. Built for the
 
 **Live demo:** https://trial-task-six.vercel.app
 
-## Screenshots
-
-![Dark mode](docs/screenshots/dark.png)
-![Light mode](docs/screenshots/light.png)
-
 ## Stack
 
 - Next.js 16 (App Router) + React 19
