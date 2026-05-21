@@ -46,6 +46,7 @@ next-env.d.ts
 # editor
 .vscode/
 .idea/
+.claude/
 
 # preserved scaffold helper
 trial_preserve/
