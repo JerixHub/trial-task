@@ -54,11 +54,30 @@ export function YouTubeSection({ allRows, currentRows, dateRange, today, selecte
       .map(([date, vals]) => ({ date, ...vals }));
   }, [filtered]);
 
+  const viewsLineData = useMemo(() => {
+    const perDate = new Map<string, Record<string, number>>();
+    for (const r of filtered) {
+      const e = perDate.get(r.date) ?? {};
+      e[r.channelId] = (e[r.channelId] ?? 0) + r.views;
+      perDate.set(r.date, e);
+    }
+    return [...perDate.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, vals]) => ({ date, ...vals }));
+  }, [filtered]);
+
   const barData = useMemo(() => {
     const m = groupByEntity(filtered, 'channelId', ['revenue']);
     return CHANNELS
       .filter(c => selected.includes(c.id))
       .map(c => ({ id: c.id, name: c.name, value: m.get(c.id)?.revenue ?? 0, color: c.color }));
+  }, [filtered, selected]);
+
+  const viewsBarData = useMemo(() => {
+    const m = groupByEntity(filtered, 'channelId', ['views']);
+    return CHANNELS
+      .filter(c => selected.includes(c.id))
+      .map(c => ({ id: c.id, name: c.name, value: m.get(c.id)?.views ?? 0, color: c.color }));
   }, [filtered, selected]);
 
   const tableRows = useMemo(() => {
@@ -90,6 +109,21 @@ export function YouTubeSection({ allRows, currentRows, dateRange, today, selecte
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <KpiCard label="Total views"   value={formatCompactNumber(totalViews)} delta={deltaVsPrevious(totalViews, prevViews)} />
         <KpiCard label="Total revenue" value={formatCurrency(totalRevenue)}    delta={deltaVsPrevious(totalRevenue, prevRevenue)} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="rounded-xl border border-border bg-surface p-4">
+          <h3 className="mb-2 text-sm font-medium text-text">Views over time</h3>
+          <RevenueLineChart
+            data={viewsLineData}
+            series={series.map(s => ({ id: s.id, name: s.name, color: s.color }))}
+            valueFormat="compact"
+          />
+        </div>
+        <div className="rounded-xl border border-border bg-surface p-4">
+          <h3 className="mb-2 text-sm font-medium text-text">Views by channel</h3>
+          <ViewsBarChart data={viewsBarData} valueLabel="views" />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

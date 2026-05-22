@@ -2,7 +2,7 @@
 
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { useChartColors, shortDate } from './chartTheme';
-import { formatCurrency } from '@/lib/format';
+import { formatCompactNumber, formatCurrency } from '@/lib/format';
 
 export interface SeriesDef {
   id: string;
@@ -14,21 +14,23 @@ interface Props {
   data: Array<Record<string, number | string>>;
   series: SeriesDef[];
   height?: number;
+  valueFormat?: 'currency' | 'compact';
 }
 
-export function RevenueLineChart({ data, series, height = 280 }: Props) {
+export function RevenueLineChart({ data, series, height = 280, valueFormat = 'currency' }: Props) {
   const c = useChartColors();
+  const fmt = valueFormat === 'compact' ? formatCompactNumber : formatCurrency;
   return (
     <div style={{ width: '100%', height }}>
       <ResponsiveContainer>
         <LineChart data={data} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke={c.grid} vertical={false} />
           <XAxis dataKey="date" stroke={c.axis} fontSize={11} tickFormatter={shortDate} minTickGap={24} />
-          <YAxis stroke={c.axis} fontSize={11} tickFormatter={(v: number) => formatCurrency(v)} width={56} />
+          <YAxis stroke={c.axis} fontSize={11} tickFormatter={(v: number) => fmt(v)} width={56} />
           <Tooltip
             contentStyle={{ background: c.tooltipBg, border: `1px solid ${c.tooltipBorder}`, borderRadius: 8, color: c.text, fontSize: 12 }}
             labelStyle={{ color: c.axis }}
-            formatter={(v) => formatCurrency(v as number)}
+            formatter={(v) => fmt(v as number)}
             labelFormatter={(v) => shortDate(v as string)}
           />
           {series.map(s => (
